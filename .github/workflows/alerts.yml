@@ -1,0 +1,39 @@
+name: Vacancy Alerts
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # каждые 30 минут (время UTC, возможна задержка)
+  workflow_dispatch:          # ручной запуск кнопкой
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vacancy-alerts
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests beautifulsoup4
+
+      - name: Check vacancies
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python check.py
+
+      - name: Save state
+        run: |
+          git config user.name "vacancy-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add seen.json || true
+          git commit -m "update seen state" || echo "no changes"
+          git push || echo "nothing to push"

@@ -1,0 +1,31 @@
+name: Морской обзор — утренний пост в Telegram
+
+on:
+  schedule:
+    - cron: '0 5 * * *'   # 08:00 по Москве
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Скачать текст обзора
+        run: |
+          curl -fsSL -o tg.txt \
+            "https://raw.githubusercontent.com/trainingsw75-cloud/morskoy-obzor/main/docs/tg.txt"
+          cat tg.txt
+
+      - name: Отправить Роману в личку
+        run: |
+          curl -fsS "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.CHAT_ID }}" \
+            --data-urlencode text@tg.txt > /dev/null
+          echo "Отправлено в личный чат"
+
+      - name: Отправить в канал (если настроен SEA_CHANNEL)
+        if: vars.SEA_CHANNEL != ''
+        run: |
+          curl -fsS "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ vars.SEA_CHANNEL }}" \
+            --data-urlencode text@tg.txt > /dev/null
+          echo "Отправлено в канал ${{ vars.SEA_CHANNEL }}"

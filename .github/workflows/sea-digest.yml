@@ -29,3 +29,10 @@ jobs:
             -d chat_id="${{ vars.SEA_CHANNEL }}" \
             --data-urlencode text@tg.txt > /dev/null
           echo "Отправлено в канал ${{ vars.SEA_CHANNEL }}"
+
+      - name: Сигнал о поломке
+        if: failure()
+        run: |
+          curl -s "https://api.telegram.org/bot${{ secrets.EBASHIT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.OWNER_CHAT_ID }}" \
+            --data-urlencode "text=⚠️ Робот «${{ github.workflow }}» сломался. Подробности: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

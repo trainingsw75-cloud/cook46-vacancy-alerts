@@ -1,0 +1,120 @@
+name: Multiclaude — сторож пробуждения
+
+# Робот следит за спящим проектом dlorenc/multiclaude на сайте GitHub
+# и пишет Роману в Телеграм, только если там правда что-то произошло.
+#
+# КУДА КЛАСТЬ ФАЙЛЫ (проверить перед первым запуском):
+#   • этот файл           → .github/workflows/multiclaude-news.yml
+#   • multiclaude_news.py → в корень хранилища проекта (репозитория)
+#   • multiclaude_state.json (память робота) робот создаст сам, рядом со скриптом.
+# Хранилище — cook46-vacancy-alerts: там уже лежат секреты BOT_TOKEN и CHAT_ID.
+# В хранилище с сайтом (GitHub Pages) этого робота селить нельзя: он делает
+# записи в хранилище, и сайт будет пересобираться впустую.
+#
+# Расписание внутри скрипта:
+#   • раз в неделю — не проснулся ли проект + свежие обсуждения;
+#   • раз в месяц — не вышла ли готовая версия и не переехала ли работа к другим;
+#   • раз в 30 дней, если новостей нет, — одна строка «сторож на месте».
+# Сам робот запускается каждое утро, а скрипт решает, что сегодня проверять.
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 06:00 UTC = 09:00 по Москве, каждый день
+  workflow_dispatch:       # запустить вручную: вкладка Actions («Действия») →
+                           # этот робот → зелёная кнопка Run workflow («Запустить»)
+
+concurrency:
+  group: multiclaude-news
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------- 1. смотрим
+  # У этой задачи права ТОЛЬКО НА ЧТЕНИЕ: скрипт ничего не записывает
+  # на GitHub, он лишь читает чужой проект и пишет Роману в Телеграм.
+  watch:
+    if: github.repository == 'trainingsw75-cloud/cook46-vacancy-alerts'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Версия закреплена, и есть вторая попытка: разовый сбой склада
+      # библиотек не должен ронять весь запуск.
+      - name: Поставить библиотеку requests
+        run: pip install requests==2.32.3 || (sleep 10 && pip install requests==2.32.3)
+
+      - name: Проверить проект multiclaude
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}       # токен бота @cook46_bot (уже заведён)
+          CHAT_ID: ${{ secrets.CHAT_ID }}           # адрес Романа в Телеграме (уже заведён)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ключ ТОЛЬКО НА ЧТЕНИЕ, выдаётся сайтом GitHub сам
+        run: python multiclaude_news.py
+
+      # Память передаём во вторую задачу свёртком. Скрипт записывает файл
+      # только тогда, когда сообщение реально доставлено.
+      - name: Передать память дальше
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multiclaude-state
+          path: multiclaude_state.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ---------------------------------------------------------------- 2. сохраняем
+  # Право записи есть только у этой задачи, и только ради файла памяти.
+  save:
+    needs: watch
+    if: always() && needs.watch.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # полная история: без неё git pull --rebase иногда отказывается
+
+      - name: Забрать память
+        continue-on-error: true   # свёртка может не появиться — значит, менять нечего
+        uses: actions/download-artifact@v4
+        with:
+          name: multiclaude-state
+
+      - name: Сохранить память робота
+        run: |
+          set -e
+          if [ ! -f multiclaude_state.json ]; then
+            echo "Памяти нечего сохранять"
+            exit 0
+          fi
+          git config user.name "multiclaude-watch-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add multiclaude_state.json
+          if git diff --cached --quiet; then
+            echo "Изменений нет"
+            exit 0
+          fi
+          git commit -m "multiclaude: обновление памяти робота"
+          # В это же хранилище пишут другие роботы Романа (вакансии, «Морской
+          # обзор»), поэтому отправка может быть отклонена. Пробуем пять раз.
+          for i in 1 2 3 4 5; do
+            if git pull --rebase --autostash origin "$GITHUB_REF_NAME" && git push; then
+              echo "Память сохранена с попытки $i"
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((i * 5))
+          done
+          echo "Память сохранить не удалось — запуск помечаем красным"
+          exit 1
+
+      # Если этот шаг покраснел — робот НЕ забыл новость (он её ещё не отмечал),
+      # но память не записалась. GitHub пришлёт письмо о неудачном запуске.
+      # Молчащий сломанный робот не должен выглядеть исправным.

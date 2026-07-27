@@ -1,0 +1,139 @@
+{
+ "branch": "main",
+ "commits_since": "2026-01-28T23:14:09Z",
+ "fail_streak": 0,
+ "forks": {
+  "DavideRutigliano/multiclaude": "2026-01-28T00:44:17Z",
+  "DuffDX/multiclaude": "2026-01-28T23:14:09Z",
+  "amilcodes/multiclaude": "2026-01-28T23:14:09Z",
+  "anzzyspeaksgit/multiclaude": "2026-03-12T13:59:25Z",
+  "arcaven/multiclaude": "2026-01-28T23:14:09Z",
+  "arcavenai/multiclaude": "2026-04-02T23:52:24Z",
+  "chasen-bettinger/multiclaude": "2026-06-19T18:01:00Z",
+  "choobinejad/multiclaude": "2026-01-28T23:14:09Z",
+  "cjwilburn/multiclaude": "2026-01-28T23:14:09Z",
+  "jrobsonchase/multiclaude": "2026-01-28T23:14:09Z",
+  "kiambogo/multiclaude": "2026-05-11T06:35:16Z",
+  "luchaoshuai/multiclaude": "2026-01-28T23:14:09Z",
+  "marutsinghhvogue/multiclaude": "2026-01-28T23:14:09Z",
+  "mshort55/multiclaude": "2026-01-28T23:14:09Z",
+  "philmillians/multiclaude": "2026-01-28T23:14:09Z",
+  "rjsadow/multiclaude": "2026-01-28T23:14:09Z",
+  "sandersn/multiclaude": "2026-03-06T17:44:31Z",
+  "trainingsw75-cloud/multiclaude": "2026-01-28T23:14:09Z",
+  "zchee/multiagents": "2026-01-28T23:14:09Z",
+  "zhammami/multiclaude": "2026-01-28T23:14:09Z"
+ },
+ "forks_initialized": true,
+ "format": 2,
+ "last_digest_date": "",
+ "last_heartbeat": "2026-07-27",
+ "last_monthly": "",
+ "last_weekly": "",
+ "mode": "sleep",
+ "pushed_at": "2026-01-28T23:14:09Z",
+ "quiet_digests": 0,
+ "seen_issues": {
+  "319": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T13:50:39Z"
+  },
+  "321": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:22:21Z"
+  },
+  "323": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:22:14Z"
+  },
+  "324": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:22:18Z"
+  },
+  "325": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T13:50:35Z"
+  },
+  "326": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T13:50:36Z"
+  },
+  "327": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T13:50:37Z"
+  },
+  "333": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:40Z"
+  },
+  "334": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:29Z"
+  },
+  "335": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:52Z"
+  },
+  "336": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:28Z"
+  },
+  "337": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:50Z"
+  },
+  "338": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:47Z"
+  },
+  "339": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:43Z"
+  },
+  "340": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:41Z"
+  },
+  "341": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:25Z"
+  },
+  "342": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-19T03:23:30Z"
+  },
+  "372": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-04-23T04:40:26Z"
+  },
+  "373": {
+   "k": "open_issue",
+   "t": "2026-07-27",
+   "u": "2026-05-11T06:28:25Z"
+  },
+  "374": {
+   "k": "open_pr",
+   "t": "2026-07-27",
+   "u": "2026-05-11T06:35:28Z"
+  }
+ },
+ "seen_releases": {}
+}
